@@ -26,3 +26,22 @@ class EventGRPCHandler(object):
                 'state': state,
                 'message': message
             })
+
+class EventKafkaStreamHandler(object):
+
+    def notify(self, transaction: Transaction, state: str, message: dict):
+        if state in _STATE:
+            kafka_message = str({
+                'timestamp': datetime.utcnow().isoformat(),
+                'transaction_id': transaction.get_meta('transaction_id'),
+                'hostname': socket.gethostname(),
+                'service': transaction.service,
+                'resource': transaction.resource,
+                'verb': transaction.verb,
+                'state': state,
+                'message': {} if state == 'SUCCESS' else message
+            })
+            if self.debug:
+                self.producer.produce(self.topic, kafka_message, callback=self._response_callback)
+            else:
+                self.producer.produce(self.topic, kafka_message)
