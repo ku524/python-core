@@ -28,6 +28,21 @@ class EventGRPCHandler(object):
             })
 
 class EventKafkaStreamHandler(object):
+    def __init__(self, config):
+        self._validate(config)
+        self.producer = Producer({'bootstrap.servers': config['endpoint']})
+        self.topic = config['topic']
+        self.debug = config.get('debug', False)
+        self.timeout = config.get('timeout', 3)
+
+    def __del__(self):
+        self.producer.flush(timeout=self.timeout)
+
+    def _validate(self, config):
+        if config.get('endpoint') is None:
+            raise ERROR_HANDLER_CONFIGURATION(handler_name=self.__class__.__name__, reason='endpoint is not set.')
+        if config.get('topic') is None:
+            raise ERROR_HANDLER_CONFIGURATION(handler_name=self.__class__.__name__, reason='topic is not set.')
 
     def notify(self, transaction: Transaction, state: str, message: dict):
         if state in _STATE:
@@ -45,3 +60,10 @@ class EventKafkaStreamHandler(object):
                 self.producer.produce(self.topic, kafka_message, callback=self._response_callback)
             else:
                 self.producer.produce(self.topic, kafka_message)
+
+    @staticmethod
+    def _response_callback(err, msg):
+        if err:
+            _LOGGER.debug(f'Message delivery failed. (reason = {err})')
+        else:
+            _LOGGER.debug(f'Message delivered to {msg.topic()} [{msg.partition()}]')
