@@ -49,6 +49,8 @@ setup(
         "celery",
         "scheduler-cron",
         "click",
+        "celery[redis]==4.4.7",
+        "confluent_kafka"
     ],
     zip_safe=False,
     entry_points={

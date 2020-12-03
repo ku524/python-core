@@ -145,10 +145,6 @@ class ERROR_DB_QUERY(ERROR_UNKNOWN):
     _message = 'Database query failed. (reason = {reason})'
 
 
-class ERROR_DB_QUERY(ERROR_UNKNOWN):
-    _message = 'Database query failed. (reason = {reason})'
-
-
 class ERROR_CACHE_OPTION(ERROR_UNKNOWN):
     _message = 'Does not support the cache option. (method = {method}, option = {option})'
 
@@ -197,6 +193,10 @@ class ERROR_GRPC_CONFIGURATION(ERROR_BASE):
 
 class ERROR_HANDLER(ERROR_BASE):
     _message = '\'{handler_type} handler\' import failed. (reason = {reason})'
+
+
+class ERROR_HANDLER_CONFIGURATION(ERROR_BASE):
+    _message = '\'{handler_name} handler\' configuration is invalid. (reason = {reason})'
 
 
 class ERROR_AUTHENTICATE_FAILURE(ERROR_BASE):

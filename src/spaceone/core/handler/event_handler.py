@@ -1,11 +1,15 @@
-from google.protobuf.json_format import MessageToDict
+from datetime import datetime
+import socket
+import logging
+from confluent_kafka import Producer
 from spaceone.core import pygrpc
 from spaceone.core import utils
+from spaceone.core.error import *
 from spaceone.core.transaction import Transaction
 from spaceone.api.core.v1 import handler_pb2
 
 _STATE = ['STARTED', 'IN-PROGRESS', 'SUCCESS', 'FAILURE']
-
+_LOGGER = logging.getLogger(__name__)
 
 class EventGRPCHandler(object):
 

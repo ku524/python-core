@@ -14,4 +14,6 @@ jsonschema
 python-dateutil
 python-consul
 scheduler-cron
+click
 celery[redis]==4.4.7
+confluent_kafka
